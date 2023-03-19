@@ -5,7 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { EventEmitter } from 'events';
 
 async function main() {
-    const connection = await amqp.connect('amqp://localhost:5672');
+    const rabbitmqHost = process.env.RABBITMQ_HOST ?? 'localhost';
+    const connection = await amqp.connect(`amqp://${rabbitmqHost}`);
     const channel = await connection.createChannel();
     await channel.assertQueue('books_queries');
     const resultsQueue = await channel.assertQueue('books_results');

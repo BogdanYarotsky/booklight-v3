@@ -3,7 +3,8 @@ import Book from 'booklight-shared';
 
 // Dummy data for demonstration purposes
 async function main() {
-    const connection = await amqp.connect('amqp://localhost:5672');
+    const rabbitmqHost = process.env.RABBITMQ_HOST ?? 'localhost';
+    const connection = await amqp.connect(`amqp://${rabbitmqHost}`);
     const channel = await connection.createChannel();
     await channel.assertQueue('books_queries');
     await channel.assertQueue('books_results');
