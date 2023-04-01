@@ -1,1 +1,14 @@
-FROM node:18.15.0-slim
+# docker/client/Dockerfile
+
+# Stage 1: Build
+FROM node:18.15.0 AS build
+WORKDIR /app
+COPY client/package*.json ./
+RUN npm ci
+COPY client ./
+RUN npm run build
+
+# Stage 2: Serve with Nginx
+FROM nginx:1.21.6
+COPY --from=build /app/dist /usr/share/nginx/html
+COPY ./docker/client/nginx.conf /etc/nginx/nginx.conf

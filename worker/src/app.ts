@@ -1,10 +1,22 @@
-import amqp from 'amqplib';
+import amqp, { Connection } from 'amqplib';
 import Book from 'booklight-shared';
 
-// Dummy data for demonstration purposes
 async function main() {
     const rabbitmqHost = process.env.RABBITMQ_HOST ?? 'localhost';
-    const connection = await amqp.connect(`amqp://${rabbitmqHost}`);
+    const retryInterval = 5000;
+
+    let connection: Connection | undefined;
+
+    while (!connection) {
+        try {
+            connection = await amqp.connect(`amqp://${rabbitmqHost}`);
+            console.log('Connected to RabbitMQ');
+        } catch (err) {
+            console.error('Failed to connect to RabbitMQ, retrying in', retryInterval / 1000, 'seconds:', err);
+            await new Promise(r => setTimeout(r, retryInterval));
+        }
+    }
+
     const channel = await connection.createChannel();
     await channel.assertQueue('books_queries');
     await channel.assertQueue('books_results');
