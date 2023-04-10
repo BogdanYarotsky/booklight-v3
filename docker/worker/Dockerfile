@@ -1,4 +1,5 @@
-FROM node:18.15.0-slim
+FROM zenika/alpine-chrome:with-node
+USER root
 WORKDIR /app
 COPY worker/package*.json ./
 RUN npm install
