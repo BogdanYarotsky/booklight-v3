@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   rabbitmq:
@@ -18,7 +18,7 @@ services:
       - rabbitmq
     environment:
       RABBITMQ_HOST: rabbitmq
-      CORS_ALLOWED_ORIGIN: 'http://client:80'
+      CORS_ALLOWED_ORIGIN: "http://localhost"
 
   worker:
     build:

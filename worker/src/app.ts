@@ -1,21 +1,12 @@
 import amqp, { Connection } from 'amqplib';
 import { CHROME_ARGS, DEBUG_CHROME_PATH, NODE_EXIT_EVENTS } from './config';
 import Goodreads from './goodreads';
-import puppeteer from 'puppeteer-extra';
-import { Browser } from 'puppeteer-core';
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
 
-async function startBrowser(): Promise<Browser> {
-    return await puppeteer
-        .use(StealthPlugin())
-        .launch({
-            executablePath: process.env.CHROME_BIN ?? DEBUG_CHROME_PATH,
-            args: CHROME_ARGS
-        });
-}
+import startStealth from 'puppeteer-stealthy';
 
 async function main() {
-    const browser = await startBrowser();
+    const chromePath = process.env.CHROME_BIN ?? DEBUG_CHROME_PATH;
+    const browser = await startStealth(chromePath);
     const goodreads = new Goodreads(browser);
 
     const rabbitmqHost = process.env.RABBITMQ_HOST ?? 'localhost';
